@@ -38,16 +38,11 @@ class FileSearchExtension(Extension):
 
     def search(self, query, file_type=None):
         """ Try with the default fd or the previously successful command """
-        bin_name = 'fd'
-        try:
-            subprocess.check_call([bin_name])
-        except OSError:
-            bin_name = "fdfind" if bin_name == "fd" else "fd"
-
+        bin_name = 'fdfind'
+        
         """ Searches for Files using fd command """
         cmd = [
-            'timeout', '5s', 'ionice', '-c', '3', bin_name, '--threads', '1',
-            '--hidden'
+            'timeout', '5s', 'ionice', '-c', '3', bin_name, '--threads', '1'
         ]
 
         if file_type == FILE_SEARCH_FILE:
