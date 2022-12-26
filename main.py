@@ -29,6 +29,8 @@ FILE_SEARCH_FILE = 'FILE'
 
 SEARCH_ALL_FLAG = '-a '
 
+GLOB_FLAG = '-g '
+
 
 class FileSearchExtension(Extension):
     """ Main Extension Class  """
@@ -47,6 +49,8 @@ class FileSearchExtension(Extension):
             'timeout', '5s', 'ionice', '-c', '3', bin_name, '--threads', '1'
         ]
 
+        base_dir = self.preferences['base_dir']
+
         if file_type == FILE_SEARCH_FILE:
             cmd.append('-t')
             cmd.append('f')
@@ -54,14 +58,16 @@ class FileSearchExtension(Extension):
             cmd.append('-t')
             cmd.append('d')
 
+        if SEARCH_ALL_FLAG in query:
+            query = query.replace(SEARCH_ALL_FLAG, '')
+            base_dir = '/'
 
-        if query.startswith(SEARCH_ALL_FLAG):
-            cmd.append(query.removeprefix(SEARCH_ALL_FLAG))
-            cmd.append('/')
+        if GLOB_FLAG in query:
+            query = query.replace(GLOB_FLAG, '')
+            cmd.append('--glob')
         
-        else:
-            cmd.append(query)
-            cmd.append(self.preferences['base_dir'])
+        cmd.append(query)
+        cmd.append(base_dir)
 
         process = subprocess.Popen(cmd,
                                    stdout=subprocess.PIPE,
