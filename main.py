@@ -27,6 +27,8 @@ FILE_SEARCH_DIRECTORY = 'DIR'
 
 FILE_SEARCH_FILE = 'FILE'
 
+SEARCH_ALL_FLAG = '-a '
+
 
 class FileSearchExtension(Extension):
     """ Main Extension Class  """
@@ -36,7 +38,7 @@ class FileSearchExtension(Extension):
         super(FileSearchExtension, self).__init__()
         self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
 
-    def search(self, query, file_type=None):
+    def search(self, query = '', file_type=None):
         """ Try with the default fd or the previously successful command """
         bin_name = 'fdfind'
         
@@ -52,8 +54,14 @@ class FileSearchExtension(Extension):
             cmd.append('-t')
             cmd.append('d')
 
-        cmd.append(query)
-        cmd.append(self.preferences['base_dir'])
+
+        if query.startswith(SEARCH_ALL_FLAG):
+            cmd.append(query.removeprefix(SEARCH_ALL_FLAG))
+            cmd.append('/')
+        
+        else:
+            cmd.append(query)
+            cmd.append(self.preferences['base_dir'])
 
         process = subprocess.Popen(cmd,
                                    stdout=subprocess.PIPE,
