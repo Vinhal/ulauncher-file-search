@@ -32,6 +32,9 @@ SEARCH_ALL_FLAG = '-a '
 
 GLOB_FLAG = '-g '
 
+GLOB_AND_SEARCH_ALL_FLAG = '-ga '
+GLOB_AND_SEARCH_ALL_FLAG_VARIANT = '-ag '
+
 
 class FileSearchExtension(Extension):
     """ Main Extension Class  """
@@ -66,6 +69,12 @@ class FileSearchExtension(Extension):
         if GLOB_FLAG in query:
             query = query.replace(GLOB_FLAG, '')
             cmd.append('--glob')
+
+        if GLOB_AND_SEARCH_ALL_FLAG in query or GLOB_AND_SEARCH_ALL_FLAG_VARIANT in query:
+            query = query.replace(GLOB_AND_SEARCH_ALL_FLAG, '')
+            query = query.replace(GLOB_AND_SEARCH_ALL_FLAG_VARIANT, '')
+            cmd.append('--glob')
+            base_dir = '/'
         
         cmd.append(query)
         cmd.append(base_dir)
