@@ -15,6 +15,7 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.item.ExtensionSmallResultItem import ExtensionSmallResultItem
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.OpenAction import OpenAction
+from ulauncher.api.shared.action.CopyToClipboardAction import CopyToClipboardAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.action.DoNothingAction import DoNothingAction
 from ulauncher.api.shared.action.HideWindowAction import HideWindowAction
@@ -129,6 +130,10 @@ class FileSearchExtension(Extension):
 
         return DoNothingAction()
 
+    def copy_to_clipboard(self, path):
+        """ Copy path to clipboard """
+        return CopyToClipboardAction(text=path)
+
 
 class KeywordQueryEventListener(EventListener):
     """ Listener that handles the user input """
@@ -177,7 +182,7 @@ class KeywordQueryEventListener(EventListener):
                     icon=result['icon'],
                     name=result['path'].decode("utf-8"),
                     on_enter=OpenAction(result['path'].decode("utf-8")),
-                    on_alt_enter=extension.get_open_in_terminal_script(
+                    on_alt_enter=extension.copy_to_clipboard(
                         result['path'].decode("utf-8"))))
 
         return RenderResultListAction(items)
